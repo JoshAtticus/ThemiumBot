@@ -46,8 +46,21 @@ bot.onPost(async (user: string, message: string, origin: string | null) => {
             }
         });
 
-        const themeData = await response.json();
-        const minifiedJson = JSON.stringify(themeData).replace(/\s+/g, "");
+        let themeData = await response.text();
+        if (themeData.startsWith("output:")) {
+            themeData = themeData.substring(7);
+        }
+
+        let parsedData;
+        try {
+            parsedData = JSON.parse(themeData);
+        } catch (error) {
+            console.error("Failed to parse JSON:", error);
+            bot.post("Failed to create the theme. Please try again later.", origin);
+            return;
+        }
+
+        const minifiedJson = JSON.stringify(parsedData).replace(/\s+/g, "");
 
         bot.post(`Here's your theme!\n\n\`${minifiedJson}\`\n\n*P.S. Want to create themes faster and see theme previews? Try https://themium.joshatticus.online*`, origin);
     }
