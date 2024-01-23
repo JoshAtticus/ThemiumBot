@@ -1,3 +1,7 @@
 #!/bin/bash
 
-npm run start
+while true
+do
+  trap 'npm run start' EXIT
+  npm run start
+done
