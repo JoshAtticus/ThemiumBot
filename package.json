@@ -2,7 +2,7 @@
   "name": "themiumbot",
   "version": "1.0.0",
   "description": "A Meower bot for Themium",
-  "main": "src/index.ts",
+  "main": "src/index.js",
   "type": "module",
   "scripts": {
     "start": "npx tsc && node .",
