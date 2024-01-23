@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "start": "/home/linuxbrew/.linuxbrew/bin/npx tsc && /home/linuxbrew/.linuxbrew/bin/node .",
+    "start": "npx tsc && node .",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },

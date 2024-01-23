@@ -1,10 +1,10 @@
-# MDWalters125
-A multi-purpose Meower bot
+# ThemiumBot
+A Meower bot for Themium
 ## Setup
 ### Setting up the `.env` file
 ```env
-MDW125_USERNAME="[username here]"
-MDW125_PASSWORD="[password here]"
+TMB_USERNAME="[username here]"
+TMB_PASSWORD="[password here]"
 ```
 ### Running
 ```bash
