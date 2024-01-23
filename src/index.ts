@@ -16,66 +16,76 @@ const help: string[] = [
     "create"
 ];
 const admins: string[] = ["JoshAtticus"];
-const bot = new Bot();
 
-bot.onPost(async (user: string, message: string, origin: string | null) => {
+async function startBot() {
+    try {
+        const bot = new Bot();
 
-    if (message.startsWith(`@${username} `) && !(help.includes(`${message.split(" ")[1]}`))) {
-        bot.post(`That command doesn't exist! Use @${username} help to see a list of commands.`, origin);
-        log(`${user} tried to use a command that does not exist. The command was "${message}"`);
-        return;
-    }
+        bot.onPost(async (user: string, message: string, origin: string | null) => {
+            if (message.startsWith(`@${username} `) && !(help.includes(`${message.split(" ")[1]}`))) {
+                bot.post(`That command doesn't exist! Use @${username} help to see a list of commands.`, origin);
+                log(`${user} tried to use a command that does not exist. The command was "${message}"`);
+                return;
+            }
 
-    if (message.startsWith(`@${username} help`)) {
-        bot.post(`Run @${username} create (theme style) to create a theme | Want to create themes faster with instant theme previews? Check out https://themium.joshatticus.online!`)
-        log(`${user} used the command ${message}`);
-    }
+            if (message.startsWith(`@${username} help`)) {
+                bot.post(`Run @${username} create (theme style) to create a theme | Want to create themes faster with instant theme previews? Check out https://themium.joshatticus.online!`)
+                log(`${user} used the command ${message}`);
+            }
 
-    if (message.startsWith(`@${username} create`)) {
-        const themeName = message.split("create ")[1];
-        bot.post(`Creating theme...`, origin);
-        log(`${user} used the command ${message}`);
+            if (message.startsWith(`@${username} create`)) {
+                const themeName = message.split("create ")[1];
+                bot.post(`Creating theme...`, origin);
+                log(`${user} used the command ${message}`);
 
-        const response = await fetch("https://themiumapi.joshatticus.online/generate-theme", {
-            method: "POST",
-            body: JSON.stringify({
-                style: themeName
-            }),
-            headers: {
-                "Content-Type": "application/json"
+                const response = await fetch("https://themiumapi.joshatticus.online/generate-theme", {
+                    method: "POST",
+                    body: JSON.stringify({
+                        style: themeName
+                    }),
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                });
+
+                let themeData = await response.text();
+                if (themeData.startsWith("output:")) {
+                    themeData = themeData.substring(7);
+                }
+
+                let parsedData;
+                try {
+                    parsedData = JSON.parse(themeData);
+                } catch (error) {
+                    console.error("Failed to parse JSON:", error);
+                    bot.post("Failed to create the theme. Please try again later.", origin);
+                    return;
+                }
+
+                const minifiedJson = JSON.stringify(parsedData).replace(/\s+/g, "");
+
+                bot.post(`Here's your theme!\n\n\`${minifiedJson}\`\n\n*P.S. Want to create themes faster and see theme previews? Try https://themium.joshatticus.online*`, origin);
             }
         });
 
-        let themeData = await response.text();
-        if (themeData.startsWith("output:")) {
-            themeData = themeData.substring(7);
-        }
+        bot.onMessage((messageData: string) => {
+            console.log(`New message: ${messageData}`);
+        });
 
-        let parsedData;
-        try {
-            parsedData = JSON.parse(themeData);
-        } catch (error) {
-            console.error("Failed to parse JSON:", error);
-            bot.post("Failed to create the theme. Please try again later.", origin);
-            return;
-        }
+        bot.onClose(() => {
+            startBot();
+        });
 
-        const minifiedJson = JSON.stringify(parsedData).replace(/\s+/g, "");
+        bot.onLogin(() => {
+            log(`Logged on as user ${username}`);
+        });
 
-        bot.post(`Here's your theme!\n\n\`${minifiedJson}\`\n\n*P.S. Want to create themes faster and see theme previews? Try https://themium.joshatticus.online*`, origin);
+        bot.login(username, password);
+    } catch (error) {
+        console.error("An error occurred:", error);
+        console.log("Restarting the bot...");
+        startBot();
     }
-});
+}
 
-bot.onMessage((messageData: string) => {
-    console.log(`New message: ${messageData}`);
-});
-
-bot.onClose(() => {
-    bot.login(username, password);
-});
-
-bot.onLogin(() => {
-    log(`Logged on as user ${username}`);
-});
-
-bot.login(username, password);
+startBot();
