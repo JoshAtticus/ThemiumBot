@@ -64,7 +64,7 @@ async function startBot() {
 
                 const minifiedJson = JSON.stringify(parsedData).replace(/\s+/g, "");
 
-                bot.post(`Here's your theme!\n\n\`${minifiedJson}\`\n\n*P.S. Want to create themes faster and see theme previews? Try https://themium.joshatticus.online*`, origin);
+                bot.post(`Here's your theme!\n\n\`${minifiedJson}\`\n\nP.S. Want to create themes faster and see theme previews? Try https://themium.joshatticus.online`, origin);
             }
         });
 
