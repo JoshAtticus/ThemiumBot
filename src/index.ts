@@ -34,7 +34,12 @@ async function startBot() {
             }
 
             if (message.startsWith(`@${username} create`)) {
-                const themeName = message.split("create ")[1];
+                const themeName = message.split("create ")[1].trim();
+                if (!themeName) {
+                    bot.post("You need to provide a style for a theme. Use descriptive language about the colours and where you want them to be for better results.", origin);
+                    return;
+                }
+
                 bot.post(`Creating that theme... (this should only take up to 15 seconds!)`, origin);
                 log(`${user} used the command ${message}`);
 
