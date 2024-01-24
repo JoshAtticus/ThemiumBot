@@ -2,7 +2,6 @@
 import Bot from "meowerbot";
 import fetch from "node-fetch";
 import * as dotenv from "dotenv";
-import { exec } from "child_process";
 
 import { log } from "../lib/logs.js";
 
@@ -10,10 +9,12 @@ dotenv.config();
 
 const username = process.env["TMB_USERNAME"];
 const password = process.env["TMB_PASSWORD"];
-const uptime: number = new Date().getTime();
+let startTime = new Date().getTime();
 const help: string[] = [
     "help",
-    "create"
+    "create",
+    "uptime",
+    "about"
 ];
 const admins: string[] = ["JoshAtticus"];
 
@@ -70,6 +71,18 @@ async function startBot() {
                 const minifiedJson = JSON.stringify(parsedData).replace(/\s+/g, "");
 
                 bot.post(`Here's your theme!\n\n\`${minifiedJson}\`\n\nP.S. Want to create themes faster and see theme previews? Try https://themium.joshatticus.online`, origin);
+            }
+
+            if (message.startsWith(`@${username} uptime`)) {
+                const currentTime = new Date().getTime();
+                const seconds = Math.floor((currentTime - startTime) / 1000);
+                bot.post(`The bot has been running for ${seconds} seconds.`, origin);
+                log(`${user} used the command ${message}`);
+            }
+
+            if (message.startsWith(`@${username} about`)) {
+                bot.post("ThemiumBot | Powered by Gemini Pro & Themium API | Created & Maintained by @JoshAtticus", origin);
+                log(`${user} used the command ${message}`);
             }
         });
 
