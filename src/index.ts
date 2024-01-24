@@ -35,7 +35,7 @@ async function startBot() {
 
             if (message.startsWith(`@${username} create`)) {
                 const themeName = message.split("create ")[1];
-                bot.post(`Creating theme...`, origin);
+                bot.post(`Creating that theme... (this should only take up to 15 seconds!)`, origin);
                 log(`${user} used the command ${message}`);
 
                 const response = await fetch("https://themiumapi.joshatticus.online/generate-theme", {
