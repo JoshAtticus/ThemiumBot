@@ -2,6 +2,8 @@
 import Bot from "meowerbot";
 import fetch from "node-fetch";
 import * as dotenv from "dotenv";
+import { exec } from "child_process";
+import { existsSync, writeFile, unlink } from "fs";
 
 import { log } from "../lib/logs.js";
 
@@ -9,12 +11,17 @@ dotenv.config();
 
 const username = process.env["TMB_USERNAME"];
 const password = process.env["TMB_PASSWORD"];
+const sudoPassword = process.env["SUDO_PASSWORD"];
+const updateFile = ".updating";
+const restartFile = ".restarting";
 let startTime = new Date().getTime();
 const help: string[] = [
     "help",
     "create",
     "uptime",
-    "about"
+    "about",
+    "update",
+    "restart"
 ];
 const admins: string[] = ["JoshAtticus"];
 
@@ -84,6 +91,66 @@ async function startBot() {
                 bot.post("ThemiumBot | Powered by Gemini Pro & Themium API | Created & Maintained by @JoshAtticus", origin);
                 log(`${user} used the command ${message}`);
             }
+
+            if (message.startsWith(`@${username} update`) && admins.includes(user)) {
+                if (existsSync(updateFile)) {
+                    bot.post("Bot successfully updated and restarted.", origin);
+                    unlink(updateFile, (err) => {
+                        if (err) {
+                            console.error("Failed to delete the update file:", err);
+                        }
+                    });
+                } else {
+                    bot.post("Updating the bot...", origin);
+                    log(`${user} used the command ${message}`);
+
+                    writeFile(updateFile, "", (err) => {
+                        if (err) {
+                            console.error("Failed to create the update file:", err);
+                            bot.post("Failed to update the bot. Please try again later.", origin);
+                            return;
+                        }
+
+                        exec(`echo ${sudoPassword} | sudo -S git pull && echo ${sudoPassword} | sudo -S systemctl restart themiumbot`, (error, stdout, stderr) => {
+                            if (error) {
+                                console.error("Failed to update the bot:", error);
+                                bot.post("Failed to update the bot. Please try again later.", origin);
+                                return;
+                            }
+                        });
+                    });
+                }
+            }
+
+            if (message.startsWith(`@${username} restart`) && admins.includes(user)) {
+                if (existsSync(restartFile)) {
+                    bot.post("Bot successfully restarted.", origin);
+                    unlink(restartFile, (err) => {
+                        if (err) {
+                            console.error("Failed to delete the restart file:", err);
+                        }
+                    });
+                } else {
+                    bot.post("Restarting the bot...", origin);
+                    log(`${user} used the command ${message}`);
+
+                    writeFile(restartFile, "", (err) => {
+                        if (err) {
+                            console.error("Failed to create the restart file:", err);
+                            bot.post("Failed to restart the bot. Please try again later.", origin);
+                            return;
+                        }
+
+                        exec(`echo ${sudoPassword} | sudo -S systemctl restart themiumbot`, (error, stdout, stderr) => {
+                            if (error) {
+                                console.error("Failed to restart the bot:", error);
+                                bot.post("Failed to restart the bot. Please try again later.", origin);
+                                return;
+                            }
+                        });
+                    });
+                }
+            }
         });
 
         bot.onMessage((messageData: string) => {
@@ -96,6 +163,22 @@ async function startBot() {
 
         bot.onLogin(() => {
             log(`Logged on as user ${username}`);
+            if (existsSync(updateFile)) {
+                bot.post("Bot successfully updated and restarted.");
+                unlink(updateFile, (err) => {
+                    if (err) {
+                        console.error("Failed to delete the update file:", err);
+                    }
+                });
+            }
+            if (existsSync(restartFile)) {
+                bot.post("Bot successfully restarted.");
+                unlink(restartFile, (err) => {
+                    if (err) {
+                        console.error("Failed to delete the restart file:", err);
+                    }
+                });
+            }
         });
 
         bot.login(username, password);
