@@ -88,7 +88,7 @@ async function startBot() {
             }
 
             if (message.startsWith(`@${username} about`)) {
-                bot.post("ThemiumBot | Powered by Gemini Pro & Themium API | Created & Maintained by @JoshAtticus", origin);
+                bot.post("This is a bot created by JoshAtticus. It can create themes based on a given style. For more information, visit https://themium.joshatticus.online.", origin);
                 log(`${user} used the command ${message}`);
             }
 
@@ -111,12 +111,22 @@ async function startBot() {
                             return;
                         }
 
-                        exec(`echo ${sudoPassword} | sudo -S git pull && echo ${sudoPassword} | sudo -S systemctl restart themiumbot`, (error, stdout, stderr) => {
+                        exec("git pull", (error, stdout, stderr) => {
                             if (error) {
                                 console.error("Failed to update the bot:", error);
                                 bot.post("Failed to update the bot. Please try again later.", origin);
                                 return;
                             }
+
+                            exec("systemctl restart themiumbot", (error, stdout, stderr) => {
+                                if (error) {
+                                    console.error("Failed to restart the bot:", error);
+                                    bot.post("Failed to restart the bot. Please try again later.", origin);
+                                    return;
+                                }
+
+                                bot.post("Bot successfully updated and restarted.", origin);
+                            });
                         });
                     });
                 }
@@ -141,12 +151,14 @@ async function startBot() {
                             return;
                         }
 
-                        exec(`echo ${sudoPassword} | sudo -S systemctl restart themiumbot`, (error, stdout, stderr) => {
+                        exec("systemctl restart themiumbot", (error, stdout, stderr) => {
                             if (error) {
                                 console.error("Failed to restart the bot:", error);
                                 bot.post("Failed to restart the bot. Please try again later.", origin);
                                 return;
                             }
+
+                            bot.post("Bot successfully restarted.", origin);
                         });
                     });
                 }
