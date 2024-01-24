@@ -14,7 +14,6 @@ const password = process.env["TMB_PASSWORD"];
 const sudoPassword = process.env["SUDO_PASSWORD"];
 const updateFile = ".updating";
 const restartFile = ".restarting";
-let startTime = new Date().getTime();
 const help: string[] = [
     "help",
     "create",
@@ -26,6 +25,7 @@ const help: string[] = [
 const admins: string[] = ["JoshAtticus"];
 
 async function startBot() {
+    let startTime = new Date().getTime();
     try {
         const bot = new Bot();
 
