@@ -1,5 +1,5 @@
 # ThemiumBot
-A Meower bot for Themium
+A Meower bot for Themium, an AtticusAI Project
 ## Setup
 ### Setting up the `.env` file
 ```env
