@@ -68,7 +68,7 @@ async function startBot() {
         log(`${user} used the command ${message}`);
 
         const response = await fetch(
-          "https://themiumapi.joshatticus.online/generate-theme",
+          "https://geminium.joshatticus.online/api/themium/generate",
           {
             method: "POST",
             body: JSON.stringify({
