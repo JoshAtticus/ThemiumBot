@@ -82,8 +82,31 @@ async function startBot() {
 
             if (message.startsWith(`@${username} uptime`)) {
                 const currentTime = new Date().getTime();
-                const seconds = Math.floor((currentTime - startTime) / 1000);
-                bot.post(`The bot has been running for ${seconds} seconds.`, origin);
+                const uptimeInSeconds = Math.floor((currentTime - startTime) / 1000);
+    
+                const days = Math.floor(uptimeInSeconds / (3600 * 24));
+                const months = Math.floor(days / 30);
+                const remainingDays = days % 30;
+                const hours = Math.floor((uptimeInSeconds % (3600 * 24)) / 3600);
+                const minutes = Math.floor((uptimeInSeconds % 3600) / 60);
+                const seconds = uptimeInSeconds % 60;
+    
+                let uptimeMessage = "The bot has been running for ";
+                if (months > 0) {
+                    uptimeMessage += `${months} month${months > 1 ? "s" : ""} `;
+                }
+                if (remainingDays > 0) {
+                    uptimeMessage += `${remainingDays} day${remainingDays > 1 ? "s" : ""} `;
+                }
+                if (hours > 0) {
+                    uptimeMessage += `${hours} hour${hours > 1 ? "s" : ""} `;
+                }
+                if (minutes > 0) {
+                    uptimeMessage += `${minutes} minute${minutes > 1 ? "s" : ""} `;
+                }
+                uptimeMessage += `${seconds} second${seconds > 1 ? "s" : ""}.`;
+    
+                bot.post(uptimeMessage, origin);
                 log(`${user} used the command ${message}`);
             }
 
