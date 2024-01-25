@@ -126,34 +126,42 @@ async function startBot() {
                 } else {
                     bot.post("Updating the bot...", origin);
                     log(`${user} used the command ${message}`);
-
+            
                     writeFile(updateFile, "", (err) => {
                         if (err) {
                             console.error("Failed to create the update file:", err);
                             bot.post("Failed to update the bot. Please try again later.", origin);
                             return;
                         }
-
-                        exec("git pull", (error, stdout, stderr) => {
+            
+                        exec("git config --global --add safe.directory /home/josh/ThemiumBot", (error, stdout, stderr) => {
                             if (error) {
                                 console.error("Failed to update the bot:", error);
                                 bot.post("Failed to update the bot. Please try again later.", origin);
                                 return;
                             }
-
-                            exec("systemctl restart themiumbot", (error, stdout, stderr) => {
+            
+                            exec("git pull", { cwd: "/home/josh/ThemiumBot" }, (error, stdout, stderr) => {
                                 if (error) {
-                                    console.error("Failed to restart the bot:", error);
-                                    bot.post("Failed to restart the bot. Please try again later.", origin);
+                                    console.error("Failed to update the bot:", error);
+                                    bot.post("Failed to update the bot. Please try again later.", origin);
                                     return;
                                 }
-
-                                bot.post("Bot successfully updated and restarted.", origin);
+            
+                                exec("systemctl restart themiumbot", (error, stdout, stderr) => {
+                                    if (error) {
+                                        console.error("Failed to restart the bot:", error);
+                                        bot.post("Failed to restart the bot. Please try again later.", origin);
+                                        return;
+                                    }
+            
+                                    bot.post("Bot successfully updated and restarted.", origin);
+                                });
                             });
                         });
                     });
                 }
-            }
+            }            
 
             if (message.startsWith(`@${username} restart`) && admins.includes(user)) {
                 if (existsSync(restartFile)) {
