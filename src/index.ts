@@ -35,7 +35,7 @@ async function startBot() {
         !help.includes(`${message.split(" ")[1]}`)
       ) {
         bot.post(
-          `That command doesn't exist! Use @${username} help to see a list of commands.`,
+          `That command doesn't exist! Use @${username} help to see a list of commands.\n\n*ThemiumBot is shutting down on the 6th of January 2023, instead, use @Geminium theme to create themes.*`,
           origin
         );
         log(
@@ -46,7 +46,7 @@ async function startBot() {
 
       if (message.startsWith(`@${username} help`)) {
         bot.post(
-          `Run @${username} create (theme style) to create a theme | Want to create themes faster with instant theme previews? Check out https://themium.joshatticus.online!`
+          `Run @${username} create (theme style) to create a theme | ThemiumBot is shutting down on the 6th of January 2023, instead, use @Geminium theme to create themes.`
         );
         log(`${user} used the command ${message}`);
       }
@@ -55,14 +55,14 @@ async function startBot() {
         const themeName = message.split("create ")[1].trim();
         if (!themeName) {
           bot.post(
-            "You need to provide a style for a theme. Use descriptive language about the colours and where you want them to be for better results.",
+            "You need to provide a style for a theme. Use descriptive language about the colours and where you want them to be for better results.\n\n*ThemiumBot is shutting down on the 6th of January 2023, instead, use @Geminium theme to create themes.*",
             origin
           );
           return;
         }
 
         bot.post(
-          `Creating that theme... (this should only take up to 15 seconds!)`,
+          `Creating that theme... (this should only take up to 15 seconds!)\n\n*ThemiumBot is shutting down on the 6th of January 2023, instead, use @Geminium theme to create themes.*`,
           origin
         );
         log(`${user} used the command ${message}`);
@@ -91,7 +91,7 @@ async function startBot() {
         } catch (error) {
           console.error("Failed to parse JSON:", error);
           bot.post(
-            "Failed to create the theme. Please try again later.",
+            "Failed to create the theme. Please try again later.\n\n*ThemiumBot is shutting down on the 6th of January 2023, instead, use @Geminium theme to create themes.*",
             origin
           );
           return;
@@ -100,7 +100,7 @@ async function startBot() {
         const minifiedJson = JSON.stringify(parsedData).replace(/\s+/g, "");
 
         bot.post(
-          `Here's your theme!\n\n\`${minifiedJson}\`\n\nP.S. Want to create themes faster and see theme previews? Try https://themium.joshatticus.online`,
+          `Here's your theme!\n\n\`${minifiedJson}\`\n\n*ThemiumBot is shutting down on the 6th of January 2023, instead, use @Geminium theme to create themes.*`,
           origin
         );
       }
@@ -139,7 +139,7 @@ async function startBot() {
 
       if (message.startsWith(`@${username} about`)) {
         bot.post(
-          "This is a bot created by JoshAtticus. It can create themes based on a given style. For more information, visit https://themium.joshatticus.online.",
+          "I'm ThemiumBot, the official MeowerBot for Themium. To create a theme, run @ThemiumBot create (style). | Maintained by @JoshAtticus\n\n*ThemiumBot is shutting down on the 6th of January 2023, instead, use @Geminium theme to create themes.*",
           origin
         );
         log(`${user} used the command ${message}`);
